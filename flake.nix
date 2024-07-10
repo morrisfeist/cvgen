@@ -6,7 +6,7 @@
     typst.url = "github:typst/typst";
   };
 
-  outputs = { nixpkgs, typst, ... }:
+  outputs = { nixpkgs, typst, ... }@inputs:
     let
       systems = builtins.attrNames nixpkgs.legacyPackages;
 
@@ -26,6 +26,8 @@
         );
     in
     {
+      packages = forAllSystems (pkgs: pkgs.callPackage ./packages.nix { inherit inputs; });
+
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
           packages = [
