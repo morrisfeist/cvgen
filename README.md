@@ -1,5 +1,7 @@
 A pdf generator for CVs using typst
 
+<img src="docs/example.png" alt="Example generated pdf"/>
+
 ## Usage
 
 ```bash

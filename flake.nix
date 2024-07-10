@@ -27,16 +27,6 @@
     in
     {
       packages = forAllSystems (pkgs: pkgs.callPackage ./packages.nix { inherit inputs; });
-
-      devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell {
-          packages = [
-            pkgs.typst
-            pkgs.nix
-            pkgs.nixd
-            pkgs.nixpkgs-fmt
-          ];
-        };
-      });
+      devShells = forAllSystems (pkgs: pkgs.callPackage ./shells.nix { inherit inputs; });
     };
 }

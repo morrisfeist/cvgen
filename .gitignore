@@ -1,6 +1,7 @@
 .vscode/
 
-.direnv/
+/.direnv/
 /result
 
 *.pdf
+!/docs/**/*.pdf
