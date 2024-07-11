@@ -1,7 +1,7 @@
 { pkgs, lib, inputs, ... }:
 
 let
-  update-docs = pkgs.writeShellApplication rec {
+  update-docs = pkgs.writeShellApplication {
     name = "update-docs";
     runtimeInputs = with pkgs; [ imagemagickBig ];
     text = ''
@@ -23,17 +23,14 @@ let
     '';
   };
 in
-{
-  default = pkgs.mkShell {
-    packages = [
-      pkgs.typst
-      pkgs.nix
-      pkgs.nixd
-      pkgs.nixpkgs-fmt
-      update-docs
-    ];
-    shellHook = ''
-      export FLAKE_ROOT="$(git rev-parse --show-toplevel)"
-    '';
-  };
+pkgs.mkShell {
+  packages = [
+    pkgs.typst
+    pkgs.nixd
+    pkgs.nixpkgs-fmt
+    update-docs
+  ];
+  shellHook = ''
+    export FLAKE_ROOT="$(git rev-parse --show-toplevel)"
+  '';
 }

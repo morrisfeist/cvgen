@@ -6,19 +6,16 @@
     typst.url = "github:typst/typst";
   };
 
-  outputs = { nixpkgs, typst, ... }@inputs:
+  outputs = { nixpkgs, typst, self, ... }@inputs:
     let
       systems = builtins.attrNames nixpkgs.legacyPackages;
 
       forAllSystems = function: nixpkgs.lib.genAttrs systems
         (system:
           let
-            typstOverlay = (final: prev: {
-              typst = typst.packages.${system}.default;
-            });
-            overlays = [ typstOverlay ];
             pkgs = import nixpkgs {
-              inherit system overlays;
+              inherit system;
+              overlays = builtins.attrValues self.overlays;
               config.allowUnfree = true;
             };
           in
@@ -26,7 +23,10 @@
         );
     in
     {
-      packages = forAllSystems (pkgs: pkgs.callPackage ./packages.nix { inherit inputs; });
-      devShells = forAllSystems (pkgs: pkgs.callPackage ./shells.nix { inherit inputs; });
+      packages = forAllSystems (pkgs: import ./packages.nix { inherit pkgs inputs; });
+      devShells = forAllSystems (pkgs: {
+        default = pkgs.callPackage ./shell.nix { inherit inputs; };
+      });
+      overlays = import ./overlays.nix { inherit inputs; };
     };
 }
