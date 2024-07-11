@@ -39,8 +39,10 @@ let
 
       typst compile \
         --root / \
-        --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
+        --font-path ${pkgs.aileron}/share/fonts/opentype \
+        --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
         --input INPUT_JSON="$INPUT_JSON" \
+        --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
         "${template}/main.typ" \
         "$OUTPUT_PDF"
     '';

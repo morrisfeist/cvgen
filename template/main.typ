@@ -9,4 +9,6 @@
   background: background(),
 )
 
+#set text(font: "Aileron", size: 10pt, fill: theme.text);
+
 = TODO
