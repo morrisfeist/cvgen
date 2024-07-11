@@ -12,7 +12,7 @@
   background: background(),
 )
 
-#set text(font: "Aileron", size: 10pt, fill: theme.text);
+#set text(font: "Liberation Sans", size: 10pt, fill: theme.text);
 
 #show heading: set text(theme.accent)
 

@@ -40,7 +40,7 @@ let
 
       typst compile \
         --root / \
-        --font-path ${pkgs.aileron}/share/fonts/opentype \
+        --font-path ${pkgs.liberation_ttf}/share/fonts/opentype \
         --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
         --input INPUT_JSON="$INPUT_JSON" \
         --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
