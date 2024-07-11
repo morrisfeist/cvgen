@@ -1,9 +1,7 @@
 #import "data.typ": data
 #import "theme.typ": theme
 
-#let photo = [
-  = Photo
-]
+#let photo = rect(width: 100%, height: 25%, fill: theme.accent)
 
 #let languages = [
   = #data.labels.languages
