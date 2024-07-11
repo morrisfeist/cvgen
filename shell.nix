@@ -14,12 +14,12 @@ let
       fi
       REPO_PATH="$FLAKE_ROOT"
 
-      EXAMPLE_JSON="$REPO_PATH/docs/example.json"
-      EXAMPLE_PDF="$REPO_PATH/docs/example.pdf"
-      EXAMPLE_PNG="$REPO_PATH/docs/example.png"
+      DOCS_CV_JSON="$REPO_PATH/docs/cv.json"
+      DOCS_CV_PDF="$REPO_PATH/docs/cv.pdf"
+      DOCS_CV_PNG="$REPO_PATH/docs/cv.png"
 
-      ${lib.getExe inputs.self.packages.${pkgs.stdenv.system}.compile} "$EXAMPLE_JSON" "$EXAMPLE_PDF"
-      magick -density 300 "$EXAMPLE_PDF" "$EXAMPLE_PNG"
+      ${lib.getExe inputs.self.packages.${pkgs.stdenv.system}.compile} "$DOCS_CV_JSON" "$DOCS_CV_PDF"
+      magick -density 300 "$DOCS_CV_PDF" "$DOCS_CV_PNG"
     '';
   };
 in
