@@ -12,6 +12,22 @@
   "name": "John Doe",
   "job_title": "Unknown Person",
 
+  "personal_details": {
+    "name": "John Doe",
+    "birthdate": "01.01.1970",
+    "permit": "yes",
+    "website": "example.com"
+  },
+
+  "contact": {
+    "phone": "+XX XX XXX XX XX",
+    "email": "john@example.com",
+    "github": "example",
+    "address": "Examplestreet 123\n5432 Fictiousville"
+  },
+
+  "photo": "",
+
   "languages": {
     "German": ["native", "100%"],
     "English": ["fluent", "80%"]

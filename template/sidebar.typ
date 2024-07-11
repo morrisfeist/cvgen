@@ -1,11 +1,15 @@
 #import "data.typ": data
 #import "theme.typ": theme
 
-#let photo = rect(
-  width: 100%,
-  height: 25%,
-  fill: gradient.linear(theme.primary, theme.secondary),
-)
+#let photo = if data.at("photo", default: "") != "" [
+  #image(data.photo, width: 100%),
+] else [
+  #rect(
+    width: 100%,
+    height: 25%,
+    fill: gradient.linear(theme.primary, theme.secondary),
+  )
+]
 
 #let progress(name, proficiency, percent) = block[
   #grid(
@@ -56,12 +60,78 @@
   )
 ]
 
+#let icon(str) = text(11pt, font: "Font Awesome 6 Free Solid", fill: theme.primary, str)
+
 #let personal_details = [
+  #let content = ()
+
+  #if (data.personal_details.at("name", default: "") != "") {
+    content.push(icon[])
+    content.push(text(data.personal_details.name))
+  }
+
+  #if (data.personal_details.at("birthdate", default: "") != "") {
+    content.push(icon[])
+    content.push(text(data.personal_details.birthdate))
+  }
+
+  #if (data.personal_details.at("website", default: "") != "") {
+    content.push(icon[])
+    content.push(link(
+      "https://" + data.personal_details.website,
+    )[#data.personal_details.website])
+  }
+
+  #if (data.personal_details.at("permit", default: "") != "") {
+    content.push(icon[])
+    content.push(text(data.personal_details.permit))
+  }
+
   = #data.labels.personal_details
+  #grid(
+    columns: (auto, auto),
+    column-gutter: 8pt,
+    row-gutter: 8pt,
+    inset: (top: 4pt),
+    align: (top + center, top + start),
+    ..content,
+  )
 ]
 
 #let contact = [
+  #let content = ()
+
+  #if (data.contact.at("phone", default: "") != "") {
+    content.push(icon[])
+    content.push(link("tel:" + data.contact.phone))
+  }
+
+  #if (data.contact.at("email", default: "") != "") {
+    content.push(icon[])
+    content.push(link("mailto:" + data.contact.email))
+  }
+
+  #if (data.contact.at("github", default: "") != "") {
+    content.push(icon[])
+    content.push(
+      link("https://github.com/" + data.contact.github)[#data.contact.github],
+    )
+  }
+
+  #if (data.contact.at("address", default: "") != "") {
+    content.push(icon[])
+    content.push(text(data.contact.address))
+  }
+
   = #data.labels.contact
+  #grid(
+    columns: (auto, auto),
+    column-gutter: 8pt,
+    row-gutter: 8pt,
+    inset: (top: 4pt),
+    align: (top + center, top + start),
+    ..content,
+  )
 ]
 
 #rect(
