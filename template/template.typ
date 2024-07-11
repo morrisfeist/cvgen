@@ -14,4 +14,6 @@
 
 #set text(font: "Aileron", size: 10pt, fill: theme.text);
 
+#show heading: set text(theme.accent)
+
 #grid(columns: (30fr, 70fr), sidebar, body)
