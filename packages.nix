@@ -45,7 +45,8 @@ let
         --input INPUT_JSON="$INPUT_JSON" \
         --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
         --input FLAVOR=latte \
-        --input ACCENT=sky \
+        --input PRIMARY=blue \
+        --input SECONDARY=sky \
         "${template}/template.typ" \
         "$OUTPUT_PDF"
     '';

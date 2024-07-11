@@ -10,8 +10,8 @@
   #align(horizon + start)[
     #stack(
       spacing: 16pt,
-      text(size: 18pt, weight: "bold", fill: theme.accent, data.name),
-      line(stroke: 2pt + theme.accent, length: 40%),
+      text(size: 18pt, fill: theme.primary, strong(data.name)),
+      line(stroke: 2pt + theme.primary, length: 40%),
       text(size: 14pt, data.job_title),
     )
   ]
@@ -53,6 +53,6 @@
   ]
 ]
 
-#let body = rect(fill: theme.base, inset: 16pt, height: 100%, width: 100%)[
+#rect(fill: theme.base, inset: 16pt, height: 100%, width: 100%)[
   #stack(spacing: 24pt, header, profile, work_experience, education)
 ]
