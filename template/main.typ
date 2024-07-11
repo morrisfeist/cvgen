@@ -1,5 +1,7 @@
+#import "theme.typ": theme
+
 #let background() = block[
-  #rect(fill: rgb("#ffffff"), height: 100%, width: 100%)
+  #rect(fill: theme.base, height: 100%, width: 100%)
 ]
 
 #set page(
