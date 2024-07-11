@@ -1,3 +1,11 @@
 {
-  "name": "Foo Bar"
+  "labels": {
+    "contact": "Contact",
+    "education": "Education",
+    "languages": "Languages",
+    "personal_details": "Personal Details",
+    "profile": "Profile",
+    "skills": "Skills",
+    "work_experience": "Work Experience"
+  }
 }

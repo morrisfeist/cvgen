@@ -1,5 +1,7 @@
 #import "theme.typ": theme
-#import "data.typ": data
+
+#import "body.typ": body
+#import "sidebar.typ": sidebar
 
 #let background() = block[
   #rect(fill: theme.base, height: 100%, width: 100%)
@@ -12,5 +14,4 @@
 
 #set text(font: "Aileron", size: 10pt, fill: theme.text);
 
-= TODO
-#data.name
+#grid(columns: (30fr, 70fr), sidebar, body)

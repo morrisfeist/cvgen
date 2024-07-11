@@ -43,6 +43,8 @@ let
         --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
         --input INPUT_JSON="$INPUT_JSON" \
         --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
+        --input FLAVOR=latte \
+        --input ACCENT=sky \
         "${template}/template.typ" \
         "$OUTPUT_PDF"
     '';
