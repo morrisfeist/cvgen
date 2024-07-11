@@ -1,4 +1,4 @@
-A pdf generator for CVs using typst
+A PDF generator for CVs using typst
 
 <img src="docs/cv.png" alt="Example generated pdf"/>
 

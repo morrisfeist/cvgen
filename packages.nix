@@ -4,6 +4,7 @@ let
   lib = pkgs.lib;
 
   palette = builtins.path {
+    name = "catpuccin-palette-json";
     path = pkgs.fetchFromGitHub {
       owner = "catppuccin";
       repo = "palette";
