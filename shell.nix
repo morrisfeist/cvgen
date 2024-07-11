@@ -19,7 +19,7 @@ let
       EXAMPLE_PNG="$REPO_PATH/docs/example.png"
 
       ${lib.getExe inputs.self.packages.${pkgs.stdenv.system}.compile} "$EXAMPLE_JSON" "$EXAMPLE_PDF"
-      magick -density 200 "$EXAMPLE_PDF" "$EXAMPLE_PNG"
+      magick -density 300 "$EXAMPLE_PDF" "$EXAMPLE_PNG"
     '';
   };
 in

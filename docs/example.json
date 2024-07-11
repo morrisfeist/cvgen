@@ -7,5 +7,8 @@
     "profile": "Profile",
     "skills": "Skills",
     "work_experience": "Work Experience"
-  }
+  },
+
+  "name": "John Doe",
+  "job_title": "Unknown Person"
 }

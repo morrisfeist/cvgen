@@ -1,8 +1,20 @@
 #import "data.typ": data
 #import "theme.typ": theme
 
-#let header = [
-  = Header
+#let header = rect(
+  fill: theme.crust,
+  width: 100%,
+  outset: (left: 24pt),
+  inset: (left: 0pt, top: 16pt, right: 16pt, bottom: 16pt),
+)[
+  #align(horizon + start)[
+    #stack(
+      spacing: 16pt,
+      text(size: 18pt, weight: "bold", fill: theme.accent, data.name),
+      line(stroke: 2pt + theme.accent, length: 40%),
+      text(size: 14pt, data.job_title),
+    )
+  ]
 ]
 
 #let profile = [
