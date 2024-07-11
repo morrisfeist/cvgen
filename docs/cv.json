@@ -29,12 +29,17 @@
   "photo": "",
 
   "languages": {
-    "German": ["native", "100%"],
-    "English": ["fluent", "80%"]
+    "English": ["native", "100%"],
+    "French": ["fluent", "80%"]
   },
 
   "skills": {
-    "HTML": ["3+ yrs", "80%"]
+    "HTML": ["3+ yrs", "80%"],
+    "C++": ["6+ yrs", "100%"],
+    "Rust": ["3+ yrs", "60%"],
+    "Haskell": ["4+ yrs", "100%"],
+    "Typescript": ["2+ yrs", "80%"],
+    "Docker": ["2+ yrs", "40%"]
   },
 
   "profile": [
@@ -55,10 +60,33 @@
         "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
       ]
+    },
+    {
+      "position": "Quop",
+      "company": "Bar Ltd.",
+      "location": "Zurich, Switzerland",
+      "year": "2020 - 2022",
+      "highlights": [
+        "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+        "At vero eos et accusam et justo duo dolores et ea rebum.",
+        "Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+      ]
     }
   ],
 
   "education": [
+    {
+      "degree": "MSc. Computer Science",
+      "school": "Baz University",
+      "location": "Zurich, Switzerland",
+      "year": "2022 - 2023",
+      "highlights": [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      ]
+    },
     {
       "degree": "BSc. Computer Science",
       "school": "Baz University",
