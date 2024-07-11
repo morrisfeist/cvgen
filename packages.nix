@@ -29,7 +29,7 @@ let
         exit 1
       fi
 
-      INPUT_JSON="$1"; shift
+      INPUT_JSON="$(realpath "$1")"; shift
 
       if [ "$#" -lt 1 ]; then
         OUTPUT_PDF="$(pwd)/cv.pdf"
