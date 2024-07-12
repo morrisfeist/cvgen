@@ -37,24 +37,61 @@ let
     '';
   };
 
+  parseArgs = name: ''
+    function usage {
+      echo "Usage: ${name} [--template <path>] path/to/input.json [path/to/output.json]"
+      echo ""
+      echo "Options:"
+      echo "  -t, --template        Specify which template folder to use. Useful when working on the template itself"
+    }
+
+    INPUT_JSON=
+    OUTPUT_PDF=
+    TEMPLATE="${template}"
+
+    while [[ "$#" -gt 0 ]]; do
+      i="$1"; shift
+      case "$i" in
+        -t|--template)
+          TEMPLATE="$1"; shift
+          ;;
+        -*)
+          echo "Error: Unknown argument $1" >> /dev/stderr
+          usage
+          exit 1
+          ;;
+        *)
+          if [[ -z "$INPUT_JSON" ]]; then
+            INPUT_JSON="$(realpath "$i")"
+          elif [[ -z "$OUTPUT_PDF" ]]; then
+            OUTPUT_PDF="$(realpath "$i")"
+          else
+            echo "Error: Unknown argument $1" >> /dev/stderr
+            usage
+            exit 1
+          fi
+          ;;
+      esac
+    done
+
+    if [[ -z "$INPUT_JSON" ]]; then
+      echo "Error: Missing argument path/to/input.json"
+      usage
+      exit 1
+    fi
+
+    if [[ -z "$OUTPUT_PDF" ]]; then
+      OUTPUT_PDF="$(pwd)/cv.pdf"
+    fi
+  '';
+
   compile = pkgs.writeShellApplication rec {
     name = "cvgen-compile";
     runtimeInputs = with pkgs; [
       typst
     ];
     text = ''
-      if [ "$#" -lt 1 ]; then
-        echo "Usage: ${name} path/to/input.json [path/to/output.pdf]"
-        exit 1
-      fi
-
-      INPUT_JSON="$(realpath "$1")"; shift
-
-      if [ "$#" -lt 1 ]; then
-        OUTPUT_PDF="$(pwd)/cv.pdf"
-      else
-        OUTPUT_PDF="$1"; shift
-      fi
+      ${parseArgs name}
 
       typst compile \
         --root / \
@@ -62,45 +99,43 @@ let
         --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
         --input INPUT_JSON="$INPUT_JSON" \
         --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
-        "${template}/template.typ" \
+        "$TEMPLATE/template.typ" \
         "$OUTPUT_PDF"
     '';
   };
 
 
-  watch = pkgs.writeShellApplication
-    {
-      name = "cvgen-watch";
-      runtimeInputs = with pkgs; [
-        typst
-        inotifyTools
-      ];
-      text = ''
-        if [ "$#" -lt 1 ]; then
-          echo "Usage: cvgen-compile path/to/input.json [path/to/output.pdf]"
-          exit 1
+  watch = pkgs.writeShellApplication rec {
+    name = "cvgen-watch";
+    runtimeInputs = with pkgs; [
+      typst
+      inotifyTools
+    ];
+    text = ''
+      ${parseArgs name}
+
+      ARGS=("--template" "$TEMPLATE" "$INPUT_JSON" "$OUTPUT_PDF")
+
+      function compile {
+        if ${lib.getExe compile} "''${ARGS[@]}"; then
+          echo "Updated successfully"
         fi
+      }
 
-        INPUT_JSON="$(realpath "$1")"; shift
+      compile
 
-        set +e
-        ${lib.getExe compile} "$INPUT_JSON" "$@"
-        set -e
+      readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
+
+      while inotifywait --quiet --quiet --recursive --event close_write "''${TRANSITIVE_REFERENCES[@]}" "$TEMPLATE"
+      do
+        clear
+        compile
 
         readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
+      done
 
-        while inotifywait --quiet --quiet --event close_write "''${TRANSITIVE_REFERENCES[@]}"
-        do
-          clear
-          set +e
-          ${lib.getExe compile} "$INPUT_JSON" "$@"
-          set -e
-
-          readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
-        done
-
-      '';
-    };
+    '';
+  };
 in
 
 {

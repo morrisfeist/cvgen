@@ -22,6 +22,17 @@ let
       magick -density 300 "$DOCS_CV_PDF" "$DOCS_CV_PNG"
     '';
   };
+
+  cvgen-watch = pkgs.symlinkJoin {
+    name = "cvgen-watch";
+    pname = "cvgen-watch";
+    paths = [ inputs.self.packages.${pkgs.stdenv.system}.watch ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/cvgen-watch --add-flags "--template" --add-flags "\$FLAKE_ROOT/template"
+    '';
+    meta.mainProgram = "cvgen-watch";
+  };
 in
 pkgs.mkShell {
   packages = [
@@ -29,6 +40,7 @@ pkgs.mkShell {
     pkgs.nixd
     pkgs.nixpkgs-fmt
     update-docs
+    cvgen-watch
   ];
   shellHook = ''
     export FLAKE_ROOT="$(git rev-parse --show-toplevel)"
