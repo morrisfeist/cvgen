@@ -1,4 +1,10 @@
 {
+  "theme": {
+    "flavor": "frappe",
+    "primary": "blue",
+    "secondary": "sky"
+  },
+
   "labels": {
     "contact": "Contact",
     "education": "Education",
