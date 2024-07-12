@@ -31,3 +31,7 @@ zathura cv.pdf
 # Edit JSON file with your editor of choice
 nano/vim/emacs/code/… cv.json
 ```
+
+## Acknowledgements
+
+The layout was inspired by [jankapunkt/latexcv](https://github.com/jankapunkt/latexcv/tree/master/sidebarleft).
