@@ -7,7 +7,7 @@
   #rect(
     width: 100%,
     height: 25%,
-    fill: gradient.linear(theme.primary, theme.secondary),
+    fill: gradient.linear(theme.primary, theme.secondary, angle: 325deg),
   )
 ]
 

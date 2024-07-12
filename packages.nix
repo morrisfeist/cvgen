@@ -19,14 +19,32 @@ let
     path = ./template;
   };
 
-  compile = pkgs.writeShellApplication {
+  transitiveReferences = pkgs.writeShellApplication rec {
+    name = "cvgen-transitive-references";
+    text = ''
+      if [ "$#" -lt 1 ]; then
+        echo "Usage: ${name} path/to/input.json"
+        exit 1
+      fi
+
+      INPUT_JSON="$1"; shift
+      echo "$INPUT_JSON"
+
+      PHOTO=$(jq --raw-output '.photo' < "$INPUT_JSON")
+      if [ -n "$PHOTO" ]; then
+        echo "$PHOTO"
+      fi
+    '';
+  };
+
+  compile = pkgs.writeShellApplication rec {
     name = "cvgen-compile";
     runtimeInputs = with pkgs; [
       typst
     ];
     text = ''
       if [ "$#" -lt 1 ]; then
-        echo "Usage: cvgen-compile path/to/input.json [path/to/output.pdf]"
+        echo "Usage: ${name} path/to/input.json [path/to/output.pdf]"
         exit 1
       fi
 
@@ -51,9 +69,44 @@ let
         "$OUTPUT_PDF"
     '';
   };
+
+
+  watch = pkgs.writeShellApplication
+    {
+      name = "cvgen-watch";
+      runtimeInputs = with pkgs; [
+        typst
+        inotifyTools
+      ];
+      text = ''
+        if [ "$#" -lt 1 ]; then
+          echo "Usage: cvgen-compile path/to/input.json [path/to/output.pdf]"
+          exit 1
+        fi
+
+        INPUT_JSON="$(realpath "$1")"; shift
+
+        set +e
+        ${lib.getExe compile} "$INPUT_JSON" "$@"
+        set -e
+
+        readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
+
+        while inotifywait --quiet --quiet --event close_write "''${TRANSITIVE_REFERENCES[@]}"
+        do
+          clear
+          set +e
+          ${lib.getExe compile} "$INPUT_JSON" "$@"
+          set -e
+
+          readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
+        done
+
+      '';
+    };
 in
 
 {
-  inherit compile;
+  inherit compile watch;
   default = compile;
 }
