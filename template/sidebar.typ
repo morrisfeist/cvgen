@@ -1,7 +1,7 @@
 #import "data.typ": data
 #import "theme.typ": theme
 
-#let photo = if data.at("photo", default: "") != "" [
+#let photo = if data.photo != "" [
   #image(data.photo, width: 100%),
 ] else [
   #rect(
@@ -64,7 +64,9 @@
   )
 ]
 
-#let icon(str) = box(inset: (top: -1pt))[
+#let icon(str) = box(
+  inset: (top: -1pt),
+)[
   #text(10pt, font: "Font Awesome 6 Free Solid", fill: theme.primary, str)
 ]
 
@@ -140,12 +142,7 @@
   )
 ]
 
-#rect(
-  fill: theme.crust,
-  inset: 16pt,
-  height: 100%,
-  width: 100%,
-)[
+#rect(fill: theme.crust, inset: 16pt, height: 100%, width: 100%)[
   #let content = ()
   #content.push(photo)
   #if data.languages.len() > 0 { content.push(languages) }
