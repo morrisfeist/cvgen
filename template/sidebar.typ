@@ -140,5 +140,11 @@
   height: 100%,
   width: 100%,
 )[
-  #stack(spacing: 24pt, photo, languages, skills, personal_details, contact)
+  #let content = ()
+  #content.push(photo)
+  #if data.languages.len() > 0 { content.push(languages) }
+  #if data.skills.len() > 0 { content.push(skills) }
+  #if data.personal_details.len() > 0 { content.push(personal_details) }
+  #if data.contact.len() > 0 { content.push(contact) }
+  #stack(spacing: 24pt, ..content)
 ]

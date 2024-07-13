@@ -42,17 +42,32 @@
 #let work_experience = [
   = #data.labels.work_experience
   #for e in data.work_experience [
-    #cv_item(e.year, e.position, e.company, e.highlights)
+    #cv_item(
+      e.at("year", default: ""),
+      e.at("position", default: ""),
+      e.at("company", default: ""),
+      e.at("highlights", default: ()),
+    )
   ]
 ]
 
 #let education = [
   = #data.labels.education
   #for e in data.education [
-    #cv_item(e.year, e.degree, e.school, e.highlights)
+    #cv_item(
+      e.at("year", default: ""),
+      e.at("degree", default: ""),
+      e.at("school", default: ""),
+      e.at("highlights", default: ()),
+    )
   ]
 ]
 
 #rect(fill: theme.base, inset: 16pt, height: 100%, width: 100%)[
-  #stack(spacing: 24pt, header, profile, work_experience, education)
+  #let content = ()
+  #content.push(header)
+  #if data.profile.len() > 0 { content.push(profile) }
+  #if data.work_experience.len() > 0 { content.push(work_experience) }
+  #if data.education.len() > 0 { content.push(education) }
+  #stack(spacing: 24pt, ..content)
 ]
