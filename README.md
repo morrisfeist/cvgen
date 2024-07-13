@@ -12,7 +12,7 @@ curl https://raw.githubusercontent.com/morrisfeist/cvgen/master/docs/cv.json --o
 nano/vim/emacs/code/… cv.json
 
 # Create `cv.pdf` in working directory
-nix run github:morrisfeist/cvgen -- cv.json
+nix run github:morrisfeist/cvgen -- compile cv.json
 ```
 
 Alternativly to continuously work on it while reviewing changes:
@@ -22,7 +22,7 @@ Alternativly to continuously work on it while reviewing changes:
 curl https://raw.githubusercontent.com/morrisfeist/cvgen/master/docs/cv.json --output cv.json
 
 # Create `cv.pdf` in working directory
-nix run github:morrisfeist/cvgen#watch -- cv.json
+nix run github:morrisfeist/cvgen -- watch cv.json
 
 # Open pdf-viewer that reloads the document when it is updated
 # e.g.

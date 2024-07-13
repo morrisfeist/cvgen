@@ -37,89 +37,99 @@ let
     '';
   };
 
-  parseArgs = name: ''
-    function usage {
-      echo "Usage: ${name} [--template <path>] path/to/input.json [path/to/output.json]"
-      echo ""
-      echo "Options:"
-      echo "  -t, --template        Specify which template folder to use. Useful when working on the template itself"
-    }
-
-    INPUT_JSON=
-    OUTPUT_PDF=
-    TEMPLATE="${template}"
-
-    while [[ "$#" -gt 0 ]]; do
-      i="$1"; shift
-      case "$i" in
-        -t|--template)
-          TEMPLATE="$1"; shift
-          ;;
-        -*)
-          echo "Error: Unknown argument $1" >> /dev/stderr
-          usage
-          exit 1
-          ;;
-        *)
-          if [[ -z "$INPUT_JSON" ]]; then
-            INPUT_JSON="$(realpath "$i")"
-          elif [[ -z "$OUTPUT_PDF" ]]; then
-            OUTPUT_PDF="$(realpath "$i")"
-          else
-            echo "Error: Unknown argument $1" >> /dev/stderr
-            usage
-            exit 1
-          fi
-          ;;
-      esac
-    done
-
-    if [[ -z "$INPUT_JSON" ]]; then
-      echo "Error: Missing argument path/to/input.json"
-      usage
-      exit 1
-    fi
-
-    if [[ -z "$OUTPUT_PDF" ]]; then
-      OUTPUT_PDF="$(pwd)/cv.pdf"
-    fi
-  '';
-
-  compile = pkgs.writeShellApplication rec {
-    name = "cvgen-compile";
-    runtimeInputs = with pkgs; [
-      typst
-    ];
-    text = ''
-      ${parseArgs name}
-
-      typst compile \
-        --root / \
-        --font-path ${pkgs.liberation_ttf}/share/fonts/opentype \
-        --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
-        --input INPUT_JSON="$INPUT_JSON" \
-        --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
-        "$TEMPLATE/template.typ" \
-        "$OUTPUT_PDF"
-    '';
-  };
-
-
-  watch = pkgs.writeShellApplication rec {
-    name = "cvgen-watch";
+  cvgen = pkgs.writeShellApplication rec {
+    name = "cvgen";
     runtimeInputs = with pkgs; [
       typst
       inotifyTools
     ];
     text = ''
-      ${parseArgs name}
+      function usage {
+        echo "Usage:"
+        echo "  ${name} <command> [<option> ...] <path/to/input.json> [<path/to/output.pdf>]"
+        echo ""
+        echo "COMMANDS"
+        echo "  compile                   Generate PDF file from the given JSON file"
+        echo "  watch                     Continuously watch input files for changes and regenerate PDF"
+        echo ""
+        echo "OPTIONS"
+        echo "  -h, --help                Show this list of command-line options"
+        echo "  -t, --template <path>     Specify which template folder to use. Useful when working on the template itself"
+      }
 
-      ARGS=("--template" "$TEMPLATE" "$INPUT_JSON" "$OUTPUT_PDF")
+      COMMAND=
+      INPUT_JSON=
+      OUTPUT_PDF=
+      TEMPLATE="${template}"
+
+      while [[ "$#" -gt 0 ]]; do
+        i="$1"; shift
+        case "$i" in
+          -h|--help)
+            usage
+            exit 0
+            ;;
+          -t|--template)
+            TEMPLATE="$1"; shift
+            ;;
+          -*)
+            echo "Error: Unknown argument $i" >> /dev/stderr
+            usage
+            exit 1
+            ;;
+          *)
+            if [[ -z "$COMMAND" ]]; then
+              case "$i" in
+                compile)
+                  COMMAND="$i"
+                  ;;
+                watch)
+                  COMMAND="$i"
+                  ;;
+                *)
+                  echo "Error: Unknown command $i" >> /dev/stderr
+                  usage
+                  exit 1
+                  ;;
+              esac
+            elif [[ -z "$INPUT_JSON" ]]; then
+              INPUT_JSON="$(realpath "$i")"
+            elif [[ -z "$OUTPUT_PDF" ]]; then
+              OUTPUT_PDF="$(realpath "$i")"
+            else
+              echo "Error: Unknown argument $i" >> /dev/stderr
+              usage
+              exit 1
+            fi
+            ;;
+        esac
+      done
+
+      if [[ -z "$COMMAND" ]]; then
+        echo "Error: Missing command"
+        usage
+        exit 1
+      fi
+
+      if [[ -z "$INPUT_JSON" ]]; then
+        echo "Error: Missing argument path/to/input.json"
+        usage
+        exit 1
+      fi
+
+      if [[ -z "$OUTPUT_PDF" ]]; then
+        OUTPUT_PDF="$(pwd)/cv.pdf"
+      fi
 
       function compile {
-        if ${lib.getExe compile} "''${ARGS[@]}"; then
-          echo "Updated successfully"
-        fi
+        typst compile \
+          --root / \
+          --font-path ${pkgs.liberation_ttf}/share/fonts/opentype \
+          --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
+          --input INPUT_JSON="$INPUT_JSON" \
+          --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
+          "$TEMPLATE/template.typ" \
+          "$OUTPUT_PDF"
       }
 
       filter_existing() {
@@ -136,20 +146,27 @@ let
         readarray -t TRANSITIVE_REFERENCES < <(filter_existing "''${TRANSITIVE_REFERENCES[@]}")
       }
 
-      compile
-      fetch_references
+      case "$COMMAND" in
+        compile)
+          compile
+          ;;
+        watch)
+          do=true
+          while $do || inotifywait --quiet --quiet --recursive --event close_write "''${TRANSITIVE_REFERENCES[@]}" "$TEMPLATE"; do
+            do=false
 
-      while inotifywait --quiet --quiet --recursive --event close_write "''${TRANSITIVE_REFERENCES[@]}" "$TEMPLATE"
-      do
-        clear
-        compile
-        fetch_references
-      done
+            clear
+            if compile; then
+              echo "Updated successfully"
+            fi
+            fetch_references
+          done
+      esac
     '';
   };
 in
 
 {
-  inherit compile watch;
-  default = compile;
+  inherit cvgen;
+  default = cvgen;
 }
