@@ -5,10 +5,10 @@ let
     name = "update-docs";
     runtimeInputs = with pkgs; [ imagemagickBig ];
     text = ''
-      if [ -z "$FLAKE_ROOT" ]; then
+      if [[ -z "$FLAKE_ROOT" ]]; then
         echo "Error: Environment variable FLAKE_ROOT is not set" >> /dev/stderr
         exit 1
-      elif [ ! -d "$FLAKE_ROOT" ]; then
+      elif [[ ! -d "$FLAKE_ROOT" ]]; then
         echo "Error: Environment variable FLAKE_ROOT does not contain the path to a directory" >> /dev/stderr
         exit 1
       fi

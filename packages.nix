@@ -22,7 +22,7 @@ let
   transitiveReferences = pkgs.writeShellApplication rec {
     name = "cvgen-transitive-references";
     text = ''
-      if [ "$#" -lt 1 ]; then
+      if [[ "$#" -lt 1 ]]; then
         echo "Usage: ${name} path/to/input.json"
         exit 1
       fi
@@ -31,7 +31,7 @@ let
       echo "$INPUT_JSON"
 
       PHOTO=$(jq --raw-output '.photo' < "$INPUT_JSON")
-      if [ -n "$PHOTO" ]; then
+      if [[ -n "$PHOTO" ]]; then
         echo "$PHOTO"
       fi
     '';
@@ -122,18 +122,29 @@ let
         fi
       }
 
-      compile
+      filter_existing() {
+        while [[ "$#" -gt 0 ]]; do
+          item="$1"; shift
+          if [[ -e "$item" ]]; then
+            echo "$item"
+          fi
+        done
+      }
 
-      readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
+      function fetch_references {
+        readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
+        readarray -t TRANSITIVE_REFERENCES < <(filter_existing "''${TRANSITIVE_REFERENCES[@]}")
+      }
+
+      compile
+      fetch_references
 
       while inotifywait --quiet --quiet --recursive --event close_write "''${TRANSITIVE_REFERENCES[@]}" "$TEMPLATE"
       do
         clear
         compile
-
-        readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
+        fetch_references
       done
-
     '';
   };
 in
