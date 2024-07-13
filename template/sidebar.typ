@@ -64,7 +64,9 @@
   )
 ]
 
-#let icon(str) = text(11pt, font: "Font Awesome 6 Free Solid", fill: theme.primary, str)
+#let icon(str) = box(inset: (top: -1pt))[
+  #text(10pt, font: "Font Awesome 6 Free Solid", fill: theme.primary, str)
+]
 
 #let personal_details = [
   #let content = ()
@@ -97,7 +99,7 @@
     column-gutter: 8pt,
     row-gutter: 8pt,
     inset: (top: 4pt),
-    align: (top + center, top + start),
+    align: (center, start),
     ..content,
   )
 ]
@@ -133,7 +135,7 @@
     column-gutter: 8pt,
     row-gutter: 8pt,
     inset: (top: 4pt),
-    align: (top + center, top + start),
+    align: (center, start),
     ..content,
   )
 ]
