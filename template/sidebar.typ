@@ -7,8 +7,12 @@
   #rect(
     width: 100%,
     height: 25%,
-    fill: gradient.linear(theme.primary, theme.secondary, angle: 325deg),
-  )
+    fill: gradient.linear(theme.primary, theme.secondary, angle: 305deg),
+  )[
+    #align(center + horizon)[
+      #text(size: 16pt, fill: theme.crust)[PHOTO]
+    ]
+  ]
 ]
 
 #let progress(name, proficiency, percent) = block[
