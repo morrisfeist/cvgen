@@ -46,23 +46,22 @@ let
     text = ''
       function usage {
         echo "Usage:"
-        echo "  ${name} <command> [<option> ...] <path/to/input.json> [<path/to/output.pdf>]"
-        echo ""
-        echo "COMMANDS"
-        echo "  compile                   Generate PDF file from the given JSON file"
-        echo "  watch                     Continuously watch input files for changes and regenerate PDF"
+        echo "  ${name} [<option>] ..."
         echo ""
         echo "OPTIONS"
+        echo "  -f, --file <path>         JSON file to use as input"
+        echo "  -j, --json <json>         JSON to use as input. Overrides definitions given via --file option"
         echo "  -h, --help                Show this list of command-line options"
-        echo "  -o, --override <json>     Override values specified in the input.json"
+        echo "  -o, --output <path>       Specify the output path for the generated PDF."
         echo "  -t, --template <path>     Specify which template folder to use. Useful when working on the template itself"
+        echo "  -w, --watch               Continuously watch inputs and template for changes and regenerate PDF"
       }
 
-      COMMAND=
-      INPUT_JSON=
-      OUTPUT_PDF=
+      JSON_FILE=
+      JSON=
+      OUTPUT="$(pwd)/cv.pdf"
       TEMPLATE="${template}"
-      OVERRIDE=
+      WATCH=
 
       while [[ "$#" -gt 0 ]]; do
         i="$1"; shift
@@ -71,71 +70,39 @@ let
             usage
             exit 0
             ;;
+          -f|--file)
+            JSON_FILE="$(realpath "$1")"; shift
+            ;;
+          -j|--json)
+            JSON="$1"; shift
+            ;;
+          -o|--output)
+            OUTPUT="$(realpath "$1")"; shift
+            ;;
           -t|--template)
             TEMPLATE="$1"; shift
             ;;
-          -o|--override)
-            OVERRIDE="$1"; shift
+          -w|--watch)
+            WATCH="true"
             ;;
-          -*)
+          *)
             echo "Error: Unknown argument $i" >> /dev/stderr
             usage
             exit 1
             ;;
-          *)
-            if [[ -z "$COMMAND" ]]; then
-              case "$i" in
-                compile)
-                  COMMAND="$i"
-                  ;;
-                watch)
-                  COMMAND="$i"
-                  ;;
-                *)
-                  echo "Error: Unknown command $i" >> /dev/stderr
-                  usage
-                  exit 1
-                  ;;
-              esac
-            elif [[ -z "$INPUT_JSON" ]]; then
-              INPUT_JSON="$(realpath "$i")"
-            elif [[ -z "$OUTPUT_PDF" ]]; then
-              OUTPUT_PDF="$(realpath "$i")"
-            else
-              echo "Error: Unknown argument $i" >> /dev/stderr
-              usage
-              exit 1
-            fi
-            ;;
         esac
       done
-
-      if [[ -z "$COMMAND" ]]; then
-        echo "Error: Missing command"
-        usage
-        exit 1
-      fi
-
-      if [[ -z "$INPUT_JSON" ]]; then
-        echo "Error: Missing argument path/to/input.json"
-        usage
-        exit 1
-      fi
-
-      if [[ -z "$OUTPUT_PDF" ]]; then
-        OUTPUT_PDF="$(pwd)/cv.pdf"
-      fi
 
       function compile {
         typst compile \
           --root / \
           --font-path ${pkgs.liberation_ttf}/share/fonts/opentype \
           --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
-          --input INPUT_JSON="$INPUT_JSON" \
+          --input JSON="$JSON" \
+          --input JSON_FILE="$JSON_FILE" \
           --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
-          --input OVERRIDE="$OVERRIDE" \
           "$TEMPLATE/template.typ" \
-          "$OUTPUT_PDF"
+          "$OUTPUT"
       }
 
       filter_existing() {
@@ -148,26 +115,27 @@ let
       }
 
       function fetch_references {
-        readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$INPUT_JSON")
-        readarray -t TRANSITIVE_REFERENCES < <(filter_existing "''${TRANSITIVE_REFERENCES[@]}")
+        TRANSITIVE_REFERENCES=()
+        if [[ -n "$JSON_FILE" ]]; then
+          readarray -t TRANSITIVE_REFERENCES < <(${lib.getExe transitiveReferences} "$JSON_FILE")
+          readarray -t TRANSITIVE_REFERENCES < <(filter_existing "''${TRANSITIVE_REFERENCES[@]}")
+        fi
       }
 
-      case "$COMMAND" in
-        compile)
-          compile
-          ;;
-        watch)
-          do=true
-          while $do || inotifywait --quiet --quiet --recursive --event close_write "''${TRANSITIVE_REFERENCES[@]}" "$TEMPLATE"; do
-            do=false
+      if [[ -z "$WATCH" ]]; then
+        compile
+      else
+        do=true
+        while $do || inotifywait --quiet --quiet --recursive --event close_write "''${TRANSITIVE_REFERENCES[@]}" "$TEMPLATE"; do
+          do=false
 
-            clear
-            if compile; then
-              echo "Updated successfully"
-            fi
-            fetch_references
-          done
-      esac
+          clear
+          if compile; then
+            echo "Updated successfully"
+          fi
+          fetch_references
+        done
+      fi
     '';
   };
 in

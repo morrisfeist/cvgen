@@ -22,15 +22,14 @@
   education: (),
 )
 
-#let inputData = if "INPUT_JSON" in sys.inputs and sys.inputs.INPUT_JSON != "" {
-  json(sys.inputs.INPUT_JSON)
+#let inputData = if "JSON_FILE" in sys.inputs and sys.inputs.JSON_FILE != "" {
+  json(sys.inputs.JSON_FILE)
 } else { (:) }
 
-#let jsonDir = sys.inputs.INPUT_JSON.split("/").slice(0, -1).join("/")
-#let getPath(path) = if (path.starts-with("/")) { path } else { jsonDir + "/" + path }
+#let getPath(path) = if path.starts-with("/") or "JSON_FILE" not in sys.inputs or sys.inputs.JSON_FILE == "" { path } else { sys.inputs.JSON_FILE.split("/").slice(0, -1).join("/") + "/" + path }
 
-#let overrideData = if "OVERRIDE" in sys.inputs and sys.inputs.OVERRIDE != "" {
-  json.decode(sys.inputs.OVERRIDE)
+#let overrideData = if "JSON" in sys.inputs and sys.inputs.JSON != "" {
+  json.decode(sys.inputs.JSON)
 } else { (:) }
 
 #let merge(x, y) = if type(x) != type(y) {
@@ -54,3 +53,7 @@
 #let mergeAll(xs) = xs.fold((:), merge)
 
 #let data = mergeAll((defaultData, inputData, overrideData))
+
+#if data.photo != "" {
+  data.insert("photo", getPath(data.photo))
+}

@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, inputs, ... }:
 
 let
   system = pkgs.stdenv.system;
@@ -15,7 +15,7 @@ let
       DOCS_CV_PDF="$FLAKE_ROOT/docs/cv.pdf"
       DOCS_CV_PNG="$FLAKE_ROOT/docs/cv.png"
 
-      cvgen compile "$DOCS_CV_JSON" "$DOCS_CV_PDF"
+      cvgen --file "$DOCS_CV_JSON" --output "$DOCS_CV_PDF"
       magick -density 300 "$DOCS_CV_PDF" "$DOCS_CV_PNG"
     '';
   };
@@ -24,7 +24,7 @@ let
     name = "cvgen-dev";
     runtimeInputs = [ cvgen ];
     text = ''
-      cvgen watch --template "$FLAKE_ROOT/template" "$@"
+      cvgen --watch --template "$FLAKE_ROOT/template" "$@"
     '';
   };
 in
