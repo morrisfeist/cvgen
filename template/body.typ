@@ -1,11 +1,11 @@
 #import "data.typ": data
 #import "theme.typ": theme
 
-#let header = rect(
+#let header = block(
   fill: theme.crust,
   width: 100%,
-  outset: (left: 24pt),
-  inset: (left: 0pt, top: 16pt, right: 16pt, bottom: 16pt),
+  outset: (left: 16pt),
+  inset: (left: 0pt, rest: 16pt),
 )[
   #align(horizon + start)[
     #stack(
@@ -17,14 +17,14 @@
   ]
 ]
 
-#let profile = block[
+#let profile = block(breakable: false)[
   = #data.labels.profile
   #for paragraph in data.profile [
     #block[#paragraph]
   ]
 ]
 
-#let cv_item(year, name, location, highlights) = block(inset: (left: -2pt, right: -2pt))[
+#let cv_item(year, name, location, highlights) = block(breakable: false, inset: (left: -2pt, right: -2pt))[
   #grid(
     columns: (72pt, 1fr, auto),
     rows: (auto),
@@ -34,7 +34,7 @@
     strong(name),
     align(right, location),
     grid.hline(stroke: 0.5pt + theme.overlay0),
-    block[],
+    [],
     grid.cell(colspan: 2, list(..highlights)),
   )
 ]
@@ -63,7 +63,7 @@
   ]
 ]
 
-#rect(fill: theme.base, inset: 16pt, height: 100%, width: 100%)[
+#block(inset: 16pt)[
   #let content = ()
   #content.push(header)
   #if data.profile.len() > 0 { content.push(profile) }

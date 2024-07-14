@@ -4,7 +4,7 @@
 #let photo = if data.photo != "" [
   #image(data.photo, width: 100%),
 ] else [
-  #rect(
+  #block(
     width: 100%,
     height: 25%,
     fill: gradient.linear(theme.primary, theme.secondary, angle: 305deg),
@@ -24,18 +24,16 @@
     grid.cell(
       colspan: 2,
       inset: (x: -2pt, y: 0pt),
-      rect(
+      block(
         fill: theme.surface0,
         width: 100%,
         height: 4pt,
         radius: 2pt,
-        inset: 0pt,
-        rect(
+        block(
           fill: gradient.linear(theme.primary, theme.secondary, relative: "parent"),
           width: percent,
           height: 100%,
           radius: 2pt,
-          inset: 0pt,
         ),
       ),
     ),
@@ -142,7 +140,7 @@
   )
 ]
 
-#rect(fill: theme.crust, inset: 16pt, height: 100%, width: 100%)[
+#block(fill: theme.crust, inset: 16pt, height: 100%, width: 100%)[
   #let content = ()
   #content.push(photo)
   #if data.languages.len() > 0 { content.push(languages) }
