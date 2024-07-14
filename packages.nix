@@ -54,6 +54,7 @@ let
         echo ""
         echo "OPTIONS"
         echo "  -h, --help                Show this list of command-line options"
+        echo "  -o, --override <json>     Override values specified in the input.json"
         echo "  -t, --template <path>     Specify which template folder to use. Useful when working on the template itself"
       }
 
@@ -61,6 +62,7 @@ let
       INPUT_JSON=
       OUTPUT_PDF=
       TEMPLATE="${template}"
+      OVERRIDE=
 
       while [[ "$#" -gt 0 ]]; do
         i="$1"; shift
@@ -71,6 +73,9 @@ let
             ;;
           -t|--template)
             TEMPLATE="$1"; shift
+            ;;
+          -o|--override)
+            OVERRIDE="$1"; shift
             ;;
           -*)
             echo "Error: Unknown argument $i" >> /dev/stderr
@@ -128,6 +133,7 @@ let
           --font-path ${pkgs.font-awesome_6}/share/fonts/opentype \
           --input INPUT_JSON="$INPUT_JSON" \
           --input THEME=${lib.escapeShellArg "${palette}/palette.json"} \
+          --input OVERRIDE="$OVERRIDE" \
           "$TEMPLATE/template.typ" \
           "$OUTPUT_PDF"
       }
