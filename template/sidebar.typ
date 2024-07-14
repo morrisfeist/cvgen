@@ -73,24 +73,24 @@
 #let personal_details = [
   #let content = ()
 
-  #if (data.personal_details.at("name", default: "") != "") {
+  #if "name" in data.personal_details {
     content.push(icon[])
     content.push(text(data.personal_details.name))
   }
 
-  #if (data.personal_details.at("birthdate", default: "") != "") {
+  #if "birthdate" in data.personal_details {
     content.push(icon[])
     content.push(text(data.personal_details.birthdate))
   }
 
-  #if (data.personal_details.at("website", default: "") != "") {
+  #if "website" in data.personal_details {
     content.push(icon[])
     content.push(link(
       "https://" + data.personal_details.website,
     )[#data.personal_details.website])
   }
 
-  #if (data.personal_details.at("permit", default: "") != "") {
+  #if "permit" in data.personal_details {
     content.push(icon[])
     content.push(text(data.personal_details.permit))
   }
@@ -109,24 +109,24 @@
 #let contact = [
   #let content = ()
 
-  #if (data.contact.at("phone", default: "") != "") {
+  #if "phone" in data.contact {
     content.push(icon[])
     content.push(link("tel:" + data.contact.phone))
   }
 
-  #if (data.contact.at("email", default: "") != "") {
+  #if "email" in data.contact {
     content.push(icon[])
     content.push(link("mailto:" + data.contact.email))
   }
 
-  #if (data.contact.at("github", default: "") != "") {
+  #if "github" in data.contact {
     content.push(icon[])
     content.push(
       link("https://github.com/" + data.contact.github)[#data.contact.github],
     )
   }
 
-  #if (data.contact.at("address", default: "") != "") {
+  #if "address" in data.contact {
     content.push(icon[])
     content.push(text(data.contact.address))
   }
