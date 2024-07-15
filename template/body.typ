@@ -17,11 +17,11 @@
   ]
 ]
 
-#let profile = block(breakable: false)[
+#let profile = block(
+  breakable: false,
+)[
   #block[= #data.labels.profile]
-  #for paragraph in data.profile [
-    #block[#paragraph]
-  ]
+  #stack(spacing: 16pt, ..data.profile.map(paragraph => block[#paragraph]))
 ]
 
 #let cv_item(name, institution, year, location, highlights) = {
@@ -46,7 +46,7 @@
 
 #let experiences = [
   #block[= #data.labels.experiences]
-  #stack(spacing: 16pt, ..data.experiences.map(e => [
+  #stack(spacing: 24pt, ..data.experiences.map(e => [
     #cv_item(
       e.at("position", default: ""),
       e.at("company", default: ""),
@@ -59,7 +59,7 @@
 
 #let education = [
   #block[= #data.labels.education]
-  #stack(spacing: 16pt, ..data.education.map(e => [
+  #stack(spacing: 24pt, ..data.education.map(e => [
     #cv_item(
       e.at("degree", default: ""),
       e.at("school", default: ""),
