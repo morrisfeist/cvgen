@@ -2,7 +2,7 @@
 #import "theme.typ": theme
 
 #let photo = if data.photo != "" [
-  #image(data.photo, width: 100%),
+  #image(data.photo, width: 100%)
 ] else [
   #block(
     width: 100%,
