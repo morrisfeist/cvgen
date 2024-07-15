@@ -8,7 +8,7 @@
     personal_details: "Personal Details",
     profile: "Profile",
     skills: "Skills",
-    work_experience: "Work Experience",
+    experiences: "Experiences",
   ),
   photo: "",
   name: "",
@@ -18,7 +18,7 @@
   personal_details: (:),
   contact: (:),
   profile: (),
-  work_experience: (),
+  experiences: (),
   education: (),
 )
 

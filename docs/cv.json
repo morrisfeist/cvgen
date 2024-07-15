@@ -8,11 +8,11 @@
   "labels": {
     "contact": "Contact",
     "education": "Education",
+    "experiences": "Experiences",
     "languages": "Languages",
     "personal_details": "Personal Details",
     "profile": "Profile",
-    "skills": "Skills",
-    "work_experience": "Work Experience"
+    "skills": "Skills"
   },
 
   "name": "John Doe",
@@ -54,7 +54,7 @@
     "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
   ],
 
-  "work_experience": [
+  "experiences": [
     {
       "position": "Foo",
       "company": "Bar Ltd.",

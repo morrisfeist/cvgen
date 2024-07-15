@@ -44,9 +44,9 @@
   ]
 }
 
-#let work_experience = [
-  #block[= #data.labels.work_experience]
-  #stack(spacing: 16pt, ..data.work_experience.map(e => [
+#let experiences = [
+  #block[= #data.labels.experiences]
+  #stack(spacing: 16pt, ..data.experiences.map(e => [
     #cv_item(
       e.at("position", default: ""),
       e.at("company", default: ""),
@@ -74,7 +74,7 @@
   #let content = ()
   #content.push(header)
   #if data.profile.len() > 0 { content.push(profile) }
-  #if data.work_experience.len() > 0 { content.push(work_experience) }
+  #if data.experiences.len() > 0 { content.push(experiences) }
   #if data.education.len() > 0 { content.push(education) }
   #stack(spacing: 24pt, ..content)
 ]
