@@ -18,49 +18,56 @@
 ]
 
 #let profile = block(breakable: false)[
-  = #data.labels.profile
+  #block[= #data.labels.profile]
   #for paragraph in data.profile [
     #block[#paragraph]
   ]
 ]
 
-#let cv_item(year, name, location, highlights) = block(breakable: false, inset: (left: -2pt, right: -2pt))[
-  #grid(
-    columns: (72pt, 1fr, auto),
-    rows: (auto),
-    column-gutter: 0pt,
-    inset: (left: 2pt, right: 2pt, top: 8pt, bottom: 8pt),
-    text(fill: theme.subtext0)[#year],
-    strong(name),
-    align(right, location),
-    grid.hline(stroke: 0.5pt + theme.overlay0),
-    [],
-    grid.cell(colspan: 2, list(..highlights)),
-  )
-]
-
-#let work_experience = [
-  = #data.labels.work_experience
-  #for e in data.work_experience [
-    #cv_item(
-      e.at("year", default: ""),
-      e.at("position", default: ""),
-      e.at("company", default: ""),
-      e.at("highlights", default: ()),
+#let cv_item(name, institution, year, location, highlights) = {
+  let line_overhang = 4pt
+  block(breakable: false, inset: (x: -line_overhang))[
+    #grid(
+      columns: (1fr, auto),
+      align: (start, end),
+      row-gutter: 4pt,
+      inset: (x: line_overhang),
+      strong[#name],
+      text(fill: theme.subtext0)[#year],
+      text(fill: theme.subtext0)[#institution],
+      text(fill: theme.subtext0)[#location],
+      grid.hline(stroke: 0.5pt + theme.overlay0),
+      grid.cell(colspan: 2, inset: (x: line_overhang + 10pt, top: 8pt))[
+        #list(..highlights)
+      ],
     )
   ]
+}
+
+#let work_experience = [
+  #block[= #data.labels.work_experience]
+  #stack(spacing: 16pt, ..data.work_experience.map(e => [
+    #cv_item(
+      e.at("position", default: ""),
+      e.at("company", default: ""),
+      e.at("year", default: ""),
+      e.at("location", default: ""),
+      e.at("highlights", default: ()),
+    )
+  ]))
 ]
 
 #let education = [
-  = #data.labels.education
-  #for e in data.education [
+  #block[= #data.labels.education]
+  #stack(spacing: 16pt, ..data.education.map(e => [
     #cv_item(
-      e.at("year", default: ""),
       e.at("degree", default: ""),
       e.at("school", default: ""),
+      e.at("year", default: ""),
+      e.at("location", default: ""),
       e.at("highlights", default: ()),
     )
-  ]
+  ]))
 ]
 
 #block(inset: 16pt)[

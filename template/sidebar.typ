@@ -15,50 +15,48 @@
   ]
 ]
 
-#let progress(name, proficiency, percent) = block[
-  #grid(
-    columns: (1fr, auto),
-    row-gutter: 4pt,
-    strong[#name],
-    text(fill: theme.primary)[#proficiency],
-    grid.cell(
-      colspan: 2,
-      inset: (x: -2pt, y: 0pt),
-      block(
-        fill: theme.surface0,
-        width: 100%,
-        height: 4pt,
-        radius: 2pt,
+#let progress(name, proficiency, percent) = {
+  let bar_radius = 2pt
+  let bar_overhang = bar_radius
+  block[
+    #grid(
+      columns: (1fr, auto),
+      row-gutter: 4pt,
+      strong[#name],
+      text(fill: theme.primary)[#proficiency],
+      grid.cell(
+        colspan: 2,
+        inset: (x: -bar_overhang, y: 0pt),
         block(
-          fill: gradient.linear(theme.primary, theme.secondary, relative: "parent"),
-          width: percent,
-          height: 100%,
-          radius: 2pt,
+          fill: theme.surface0,
+          width: 100%,
+          height: 2 * bar_radius,
+          radius: bar_radius,
+          block(
+            fill: gradient.linear(theme.primary, theme.secondary, relative: "parent"),
+            width: percent,
+            height: 100%,
+            radius: bar_radius,
+          ),
         ),
       ),
-    ),
-  )
-]
+    )
+  ]
+}
 
 #let languages = [
-  = #data.labels.languages
-  #grid(
-    inset: (top: 8pt),
-    row-gutter: 6pt,
-    ..(
-      data.languages.pairs().map(((k, v)) => progress(k, v.at(0), eval(v.at(1))))
-    ),
+  #block[= #data.labels.languages]
+  #stack(
+    spacing: 14pt,
+    ..data.languages.pairs().map(((k, v)) => progress(k, v.at(0), eval(v.at(1)))),
   )
 ]
 
 #let skills = [
-  = #data.labels.skills
-  #grid(
-    inset: (top: 8pt),
-    row-gutter: 6pt,
-    ..(
-      data.skills.pairs().map(((k, v)) => progress(k, v.at(0), eval(v.at(1))))
-    ),
+  #block[= #data.labels.skills]
+  #stack(
+    spacing: 14pt,
+    ..data.skills.pairs().map(((k, v)) => progress(k, v.at(0), eval(v.at(1)))),
   )
 ]
 
@@ -93,12 +91,11 @@
     content.push(text(data.personal_details.permit))
   }
 
-  = #data.labels.personal_details
+  #block[= #data.labels.personal_details]
   #grid(
     columns: (auto, auto),
     column-gutter: 8pt,
-    row-gutter: 8pt,
-    inset: (top: 4pt),
+    row-gutter: 12pt,
     align: (center, start),
     ..content,
   )
@@ -129,12 +126,11 @@
     content.push(text(data.contact.address))
   }
 
-  = #data.labels.contact
+  #block[= #data.labels.contact]
   #grid(
     columns: (auto, auto),
     column-gutter: 8pt,
-    row-gutter: 8pt,
-    inset: (top: 4pt),
+    row-gutter: 12pt,
     align: (center, start),
     ..content,
   )
